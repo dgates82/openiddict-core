@@ -101,6 +101,12 @@ public static partial class OpenIddictClientWebIntegrationHandlers
                 // See https://github.com/openiddict/openiddict-core/issues/2428 for more information.
                 ProviderTypes.Google when context.Request.HasParameter(Parameters.Iss) &&
                     context.Configuration.AuthorizationResponseIssParameterSupported is not true => true,
+                
+                // Buffer returns an "iss" authorization response parameter without advertising
+                // "authorization_response_iss_parameter_supported" in its (manually configured)
+                // provider metadata, since it doesn't expose an OAuth authorization server metadata document.
+                ProviderTypes.Buffer when context.Request.HasParameter(Parameters.Iss) &&
+                    context.Configuration.AuthorizationResponseIssParameterSupported is not true => true,
 
                 _ => context.DisableIssuerParameterValidation
             };
@@ -1177,11 +1183,20 @@ public static partial class OpenIddictClientWebIntegrationHandlers
             ArgumentNullException.ThrowIfNull(context);
 
             Debug.Assert(context.UserInfoRequest is not null, SR.GetResourceString(SR.ID4008));
+            
+            // Buffer's userinfo endpoint is a GraphQL implementation that requires
+            // sending a proper "query" parameter containing the requested account details.
+            if (context.Registration.ProviderType is ProviderTypes.Buffer)
+            {
+                var settings = context.Registration.GetBufferSettings();
+
+                context.UserInfoRequest["query"] = $"{{ account {{ {string.Join(Separators.Space[0], settings.UserFields)} }} }}";
+            }
 
             // Dailymotion limits the number of fields returned by the userinfo endpoint
             // but allows returning additional information using special parameters that
             // determine what fields will be returned as part of the userinfo response.
-            if (context.Registration.ProviderType is ProviderTypes.Dailymotion)
+            else if (context.Registration.ProviderType is ProviderTypes.Dailymotion)
             {
                 var settings = context.Registration.GetDailymotionSettings();
 
