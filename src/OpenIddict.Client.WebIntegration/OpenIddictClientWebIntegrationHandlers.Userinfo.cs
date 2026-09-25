@@ -500,14 +500,8 @@ public static partial class OpenIddictClientWebIntegrationHandlers
 
                 Debug.Assert(context.Response is not null, SR.GetResourceString(SR.ID4007));
 
-                // Note: Buffer returns a non-standard "id" claim instead of "sub".
-                if (context.Registration.ProviderType is ProviderTypes.Buffer)
-                {
-                    context.Response[Claims.Subject] = context.Response["id"];
-                }
-                
                 // Note: Wikimedia returns a non-standard "sub" claim formatted as an integer instead of a string.
-                else if (context.Registration.ProviderType is ProviderTypes.Wikimedia)
+                if (context.Registration.ProviderType is ProviderTypes.Wikimedia)
                 {
                     context.Response[Claims.Subject] = (string?) context.Response[Claims.Subject];
                 }

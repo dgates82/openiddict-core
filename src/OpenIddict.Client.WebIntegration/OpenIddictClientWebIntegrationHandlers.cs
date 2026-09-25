@@ -101,12 +101,6 @@ public static partial class OpenIddictClientWebIntegrationHandlers
                 // See https://github.com/openiddict/openiddict-core/issues/2428 for more information.
                 ProviderTypes.Google when context.Request.HasParameter(Parameters.Iss) &&
                     context.Configuration.AuthorizationResponseIssParameterSupported is not true => true,
-                
-                // Buffer returns an "iss" authorization response parameter without advertising
-                // "authorization_response_iss_parameter_supported" in its (manually configured)
-                // provider metadata, since it doesn't expose an OAuth authorization server metadata document.
-                ProviderTypes.Buffer when context.Request.HasParameter(Parameters.Iss) &&
-                    context.Configuration.AuthorizationResponseIssParameterSupported is not true => true,
 
                 _ => context.DisableIssuerParameterValidation
             };
@@ -1613,18 +1607,18 @@ public static partial class OpenIddictClientWebIntegrationHandlers
                     ProviderTypes.Atlassian => (string?) context.UserInfoResponse?["account_id"],
 
                     // These providers return the user identifier as a custom "id" node:
-                    ProviderTypes.Airtable      or ProviderTypes.Basecamp   or ProviderTypes.Box       or
-                    ProviderTypes.Dailymotion   or ProviderTypes.Deezer     or ProviderTypes.Discord   or
-                    ProviderTypes.Disqus        or ProviderTypes.Facebook   or ProviderTypes.Figma     or
-                    ProviderTypes.Genesys       or ProviderTypes.Gitee      or ProviderTypes.GitHub    or
-                    ProviderTypes.Harvest       or ProviderTypes.Kook       or ProviderTypes.Kroger    or
-                    ProviderTypes.Lichess       or ProviderTypes.Linear     or ProviderTypes.Mastodon  or
-                    ProviderTypes.Meetup        or ProviderTypes.Miro       or ProviderTypes.Nextcloud or
-                    ProviderTypes.Osu           or ProviderTypes.Patreon    or ProviderTypes.Pipedrive or
-                    ProviderTypes.Reddit        or ProviderTypes.Smartsheet or ProviderTypes.Spotify   or
-                    ProviderTypes.SubscribeStar or ProviderTypes.Todoist    or ProviderTypes.Twitter   or
-                    ProviderTypes.Webflow       or ProviderTypes.Weibo      or ProviderTypes.Yandex    or
-                    ProviderTypes.Zoom
+                    ProviderTypes.Airtable  or ProviderTypes.Basecamp      or ProviderTypes.Box        or
+                    ProviderTypes.Buffer    or ProviderTypes.Dailymotion   or ProviderTypes.Deezer     or
+                    ProviderTypes.Discord   or ProviderTypes.Disqus        or ProviderTypes.Facebook   or
+                    ProviderTypes.Figma     or ProviderTypes.Genesys       or ProviderTypes.Gitee      or
+                    ProviderTypes.GitHub    or ProviderTypes.Harvest       or ProviderTypes.Kook       or
+                    ProviderTypes.Kroger    or ProviderTypes.Lichess       or ProviderTypes.Linear     or
+                    ProviderTypes.Mastodon  or ProviderTypes.Meetup        or ProviderTypes.Miro       or
+                    ProviderTypes.Nextcloud or ProviderTypes.Osu           or ProviderTypes.Patreon    or
+                    ProviderTypes.Pipedrive or ProviderTypes.Reddit        or ProviderTypes.Smartsheet or
+                    ProviderTypes.Spotify   or ProviderTypes.SubscribeStar or ProviderTypes.Todoist    or
+                    ProviderTypes.Twitter   or ProviderTypes.Webflow       or ProviderTypes.Weibo      or
+                    ProviderTypes.Yandex    or ProviderTypes.Zoom
                         => (string?) context.UserInfoResponse?["id"],
 
                     // Bitbucket returns the user identifier as a custom "uuid" node:

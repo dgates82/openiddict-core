@@ -400,9 +400,9 @@
     <Environment Issuer="https://auth.buffer.com/">
       <Configuration AuthorizationEndpoint="https://auth.buffer.com/auth"
                      TokenEndpoint="https://auth.buffer.com/token"
-                     UserInfoEndpoint="https://api.buffer.com">
+                     UserInfoEndpoint="https://api.buffer.com/"
+                     AuthorizationResponseIssParameterSupported="true">
         <CodeChallengeMethod Value="S256" />
-        <TokenEndpointAuthMethod Value="client_secret_post" />
         <GrantType Value="authorization_code" />
         <GrantType Value="refresh_token" />
       </Configuration>
